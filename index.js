@@ -24,7 +24,7 @@ class VTVNotifier {
             }
         });
         
-        this.excelFile = 'prueba.xlsx';
+        this.excelFile = 'prueba.xlsx'; //######################################
         this.logFile = 'logs/notificaciones.log';
         this.errorFile = 'errores/errores_envio.xlsx';
         this.processedFile = 'procesados/procesados.xlsx';
@@ -312,19 +312,19 @@ class VTVNotifier {
             if (diasDiferencia >= 0 && diasDiferencia <= 15) {
                 if (diasDiferencia === 0) {
                     // Vence hoy
-                    message = `🚨 ¡URGENTE! Tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* tiene la VTV que *VENCE HOY*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️ Es fundamental que renueves la VTV cuanto antes para evitar multas.`;
+                    message = `🚨 ¡URGENTE! 🚨\n\nHola, somos de la Verificación Técnica Vehicular Alto Verde.\n\nQueremos informarte que tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* la VTV *VENCE HOY*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días. Te recomendamos renovarla pronto para evitar inconvenientes.\n\n¡Saludos del equipo de Alto Verde! 👨‍🔧`;
                 } else if (diasDiferencia === 1) {
                     // Vence mañana
-                    message = `🚨 ¡URGENTE! Tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* tiene la VTV que vence *MAÑANA*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️ Es fundamental que renueves la VTV cuanto antes para evitar multas.`;
+                    message = `🚨 ¡URGENTE! 🚨\n\nHola, somos de la Verificación Técnica Vehicular Alto Verde. \n\nQueremos informarte que tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* la VTV que vence *MAÑANA*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días. Te recomendamos renovarla pronto para evitar inconvenientes.\n\n¡Saludos del equipo de Alto Verde! 👨‍🔧`;
                 } else {
                     // Vence en X días (2-15 días)
-                    message = `🚗 ¡Hola! Tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* tiene la VTV que vence en *${diasDiferencia} días*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️ Te recomendamos que saques turno cuanto antes para evitar problemas.`;
+                    message = `🔔 ¡AVISO! 🔔 \n\nHola, somos de la Verificación Técnica Vehicular Alto Verde. \n\nQueremos informarte que tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* la VTV vence en *${diasDiferencia} días*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días. Te recomendamos renovarla pronto para evitar inconvenientes.\n\n¡Saludos del equipo de Alto Verde! 👨‍🔧`;
                 }
                 shouldNotify = true;
             } else if (diasDiferencia < 0) {
                 // Ya vencida
                 const diasVencido = Math.abs(diasDiferencia);
-                message = `🚨 ¡ATENCIÓN! Tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* tiene la VTV *VENCIDA* desde hace *${diasVencido} días*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️ Es urgente que renueves la VTV para evitar multas.`;
+                message = `🚨 ¡ATENCIÓN! 🚨\n\nHola, somos de la Verificación Técnica Vehicular Alto Verde. \n\nQueremos informarte que tu vehículo *${vehicle.Marca} ${vehicle.Modelo}* con patente *${vehicle.Patente}* tiene la VTV *VENCIDA* desde hace *${diasVencido} días*.\n\n📅 Fecha de vencimiento: ${vencimiento.format('DD/MM/YYYY')}\n\n⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días. Es urgente que la renueves para evitar inconvenientes.\n\n¡Saludos del equipo de Alto Verde! 👨‍🔧`;
                 shouldNotify = true;
             }
 

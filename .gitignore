@@ -1,0 +1,9 @@
+# Ignorar node_modules
+node_modules/
+
+# Ignorar carpetas de autenticación y caché de whatsapp-web.js
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Ignorar todos los archivos .xlsx (en cualquier carpeta)
+*.xlsx
