@@ -105,12 +105,19 @@ class ExcelService {
 
         if (!cleaned) return '';
 
+        // Remover cero inicial si existe
         if (cleaned.startsWith('0')) {
             cleaned = cleaned.substring(1);
         }
 
-        if (!cleaned.startsWith(CONFIG.COUNTRY_CODE)) {
+        // Si ya tiene el código de país, verificar que sea el correcto
+        if (cleaned.startsWith(CONFIG.COUNTRY_CODE)) {
+            // Ya tiene el código de país correcto, no hacer nada
+            console.log(chalk.cyan(`📱 Número ya tiene código de país: ${cleaned}`));
+        } else {
+            // No tiene código de país, agregarlo
             cleaned = CONFIG.COUNTRY_CODE + cleaned;
+            console.log(chalk.cyan(`📱 Código de país agregado: ${cleaned}`));
         }
 
         if (cleaned.length < CONFIG.PHONE_MIN_LENGTH || cleaned.length > CONFIG.PHONE_MAX_LENGTH) {
