@@ -112,10 +112,10 @@ class ExcelService {
 
         // Para WhatsApp Argentina necesita el formato 549XXXXXXXXX
         if (cleaned.startsWith('549')) {
-            // Ya tiene el formato correcto para WhatsApp
-            console.log(chalk.cyan(`📱 Número ya tiene formato WhatsApp correcto: ${cleaned}`));
-        } else if (cleaned.startsWith('54')) {
-            // Tiene 54 pero falta el 9, agregarlo
+            // Ya tiene el formato correcto para WhatsApp, no modificar
+            console.log(chalk.cyan(`📱 Número ya tiene formato WhatsApp correcto (549): ${cleaned}`));
+        } else if (cleaned.startsWith('54') && !cleaned.startsWith('549')) {
+            // Tiene 54 pero no tiene el 9, agregarlo
             cleaned = '549' + cleaned.substring(2);
             console.log(chalk.cyan(`📱 Formato WhatsApp aplicado (agregado 9): ${cleaned}`));
         } else {
