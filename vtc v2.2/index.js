@@ -380,11 +380,12 @@ class VTVNotifierV2 {
         console.log(chalk.cyan(`📨 Máximo ${CONFIG.MAX_NOTIFICATIONS_PER_RUN} notificaciones por ejecución`));
 
         try {
-            await this.whatsappService.initialize();
-            // El menú se mostrará automáticamente cuando WhatsApp esté listo
-            this.whatsappService.client.on('ready', () => {
+            // Configurar el callback antes de inicializar
+            this.whatsappService.setOnReadyCallback(() => {
                 this.showMenu();
             });
+
+            await this.whatsappService.initialize();
         } catch (error) {
             console.error(chalk.red('❌ Error iniciando WhatsApp:'), error);
             console.log(chalk.yellow('🔄 Reintentando en 5 segundos...'));

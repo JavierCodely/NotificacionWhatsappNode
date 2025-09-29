@@ -12,6 +12,7 @@ class WhatsAppService {
 
         this.isReady = false;
         this.isReconnecting = false;
+        this.onReadyCallback = null;
 
         this.setupEventHandlers();
     }
@@ -29,6 +30,11 @@ class WhatsAppService {
             console.log(chalk.green('✅ WhatsApp Web está listo!'));
             this.isReady = true;
             this.isReconnecting = false;
+
+            // Ejecutar callback si existe
+            if (this.onReadyCallback) {
+                this.onReadyCallback();
+            }
         });
 
         this.client.on('auth_failure', (message) => {
@@ -121,6 +127,14 @@ class WhatsAppService {
                 }
             }
         }
+    }
+
+    /**
+     * Establece el callback para cuando WhatsApp esté listo
+     * @param {Function} callback Función a ejecutar cuando esté listo
+     */
+    setOnReadyCallback(callback) {
+        this.onReadyCallback = callback;
     }
 
     /**

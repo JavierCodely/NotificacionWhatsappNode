@@ -4,7 +4,7 @@
 
 const CONFIG = {
     // Archivos principales
-    EXCEL_FILE: 'datos_vehiculos.xlsx',
+    EXCEL_FILE: 'datos_vehiculos_test.xlsx',
     LOG_FILE: 'logs/notificaciones.log',
     ERROR_FILE: 'errores/errores_envio.xlsx',
     PROCESSED_FILE: 'procesados/procesados.xlsx',
@@ -27,8 +27,15 @@ const CONFIG = {
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
                 '--no-zygote',
-                '--disable-gpu'
-            ]
+                '--disable-gpu',
+                '--disable-background-timer-throttling',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-renderer-backgrounding',
+                '--disable-features=TranslateUI',
+                '--disable-ipc-flooding-protection'
+            ],
+            defaultViewport: null,
+            devtools: false
         }
     },
 
