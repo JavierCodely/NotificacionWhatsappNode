@@ -5,6 +5,7 @@ const { ExcelService } = require('./services/excelService');
 const { WhatsAppService } = require('./services/whatsappService');
 const { NotificationService } = require('./services/notificationService');
 const { FileService } = require('./services/fileService');
+const { ReportService } = require('./services/reportService');
 
 class VTVNotifierV2 {
     constructor() {
@@ -13,6 +14,7 @@ class VTVNotifierV2 {
         this.whatsappService = new WhatsAppService();
         this.fileService = new FileService();
         this.notificationService = new NotificationService(this.whatsappService, this.fileService);
+        this.reportService = new ReportService(this.excelService, this.fileService);
 
         // Variables para selección dinámica
         this.selectedMonth = null;
@@ -38,6 +40,10 @@ class VTVNotifierV2 {
                 value: 'stats'
             },
             {
+                name: '📝 Ver contactos ya notificados',
+                value: 'processed'
+            },
+            {
                 name: '📅 Ver distribución por meses',
                 value: 'distribution'
             },
@@ -48,6 +54,10 @@ class VTVNotifierV2 {
             {
                 name: '📋 Ver configuración actual',
                 value: 'config'
+            },
+            {
+                name: '📈 Generar reporte Excel completo',
+                value: 'report'
             },
             {
                 name: '❌ Salir',
@@ -74,6 +84,9 @@ class VTVNotifierV2 {
             case 'stats':
                 await this.showStatistics();
                 break;
+            case 'processed':
+                await this.showProcessedContacts();
+                break;
             case 'distribution':
                 await this.showMonthDistribution();
                 break;
@@ -82,6 +95,9 @@ class VTVNotifierV2 {
                 break;
             case 'config':
                 await this.showConfiguration();
+                break;
+            case 'report':
+                await this.generateReport();
                 break;
             case 'exit':
                 process.exit(0);
@@ -256,6 +272,9 @@ class VTVNotifierV2 {
             console.log(`- Enviados: ${results.success}`);
             console.log(`- Errores: ${results.errors}`);
             console.log(`- Omitidos: ${results.skipped}`);
+            if (results.alreadyNotified > 0) {
+                console.log(chalk.cyan(`- Ya notificados previamente: ${results.alreadyNotified}`));
+            }
 
         } catch (error) {
             console.error(chalk.red('❌ Error procesando notificaciones:'), error);
@@ -353,6 +372,96 @@ class VTVNotifierV2 {
         console.log(`- Errores: ${CONFIG.ERROR_FILE}`);
         console.log(`- Procesados: ${CONFIG.PROCESSED_FILE}`);
         console.log(`- Mensajes: config/messages.js`);
+
+        setTimeout(() => this.showMenu(), 8000);
+    }
+
+    /**
+     * Muestra los contactos ya notificados
+     */
+    async showProcessedContacts() {
+        try {
+            console.log(chalk.blue('📝 Consultando contactos ya notificados...'));
+
+            const processedDetails = this.fileService.getProcessedDetails();
+            const stats = this.fileService.getProcessingStats();
+
+            console.log(chalk.blue('\n=== CONTACTOS YA NOTIFICADOS ==='));
+            console.log(`📊 Total de contactos notificados: ${stats.totalProcessed}`);
+            console.log(`📈 Tasa de éxito: ${stats.processingRate}%`);
+            if (stats.lastProcessed) {
+                console.log(`📅 Última notificación: ${stats.lastProcessed}`);
+            }
+
+            if (processedDetails.length === 0) {
+                console.log(chalk.yellow('\n⚠️ No hay contactos notificados aún.'));
+            } else {
+                console.log(chalk.green(`\n📋 Últimos 10 contactos notificados:`));
+
+                // Ordenar por fecha más reciente primero
+                const sortedProcessed = processedDetails.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+
+                sortedProcessed.slice(0, 10).forEach((contact, index) => {
+                    const displayPhone = contact.Telefono ? contact.Telefono.replace('@c.us', '') : 'N/A';
+                    console.log(`${index + 1}. ${contact.Patente} - Tel: +${displayPhone} - ${contact.FechaProcesado} ${contact.HoraProcesado}`);
+                });
+
+                if (processedDetails.length > 10) {
+                    console.log(chalk.cyan(`\n... y ${processedDetails.length - 10} contactos más.`));
+                }
+
+                // Mostrar distribución por fechas
+                console.log(chalk.blue('\n📊 Distribución por fechas:'));
+                Object.entries(stats.byDate).slice(-5).forEach(([date, count]) => {
+                    console.log(`   ${date}: ${count} notificaciones`);
+                });
+            }
+
+            console.log(chalk.cyan('\n💡 Esta lista evita que se envíen notificaciones duplicadas.'));
+            console.log(chalk.yellow('📁 Los registros se guardan en: procesados/vtv_procesados.xlsx'));
+
+        } catch (error) {
+            console.error(chalk.red('❌ Error mostrando contactos procesados:'), error);
+        }
+
+        setTimeout(() => this.showMenu(), 8000);
+    }
+
+    /**
+     * Genera un reporte completo en Excel
+     */
+    async generateReport() {
+        try {
+            console.log(chalk.blue('📈 Generando reporte Excel completo...'));
+            console.log(chalk.cyan('Este proceso puede tomar unos segundos...'));
+
+            // Determinar si hay un período seleccionado
+            const targetMonth = this.selectedMonth;
+            const targetYear = this.selectedYear;
+
+            // Generar el reporte
+            const filePath = await this.reportService.generateFullReport(targetMonth, targetYear);
+
+            console.log(chalk.green('\n✅ REPORTE GENERADO EXITOSAMENTE'));
+            console.log(chalk.cyan(`📁 Archivo: ${filePath}`));
+            console.log(chalk.yellow('\n📊 El reporte incluye:'));
+            console.log('   • Resumen ejecutivo con estadísticas generales');
+            console.log('   • Análisis detallado de teléfonos (válidos, inválidos, nulos)');
+            console.log('   • Estado de VTV (vencidas, vigentes, próximas a vencer)');
+            console.log('   • Registro de notificaciones enviadas');
+            console.log('   • Lista de errores encontrados');
+            console.log('   • Distribución mensual de vencimientos');
+
+            if (targetMonth && targetYear) {
+                console.log(chalk.green(`   • Análisis específico para ${this.getMonthName(targetMonth)} ${targetYear}`));
+            }
+
+            console.log(chalk.blue('\n💡 Tip: Abre el archivo Excel para ver el análisis completo con gráficos y formato.'));
+
+        } catch (error) {
+            console.error(chalk.red('❌ Error generando reporte:'), error);
+            console.log(chalk.yellow('🔄 Intenta nuevamente o verifica que no haya archivos Excel abiertos.'));
+        }
 
         setTimeout(() => this.showMenu(), 8000);
     }

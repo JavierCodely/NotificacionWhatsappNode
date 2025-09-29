@@ -45,7 +45,14 @@ class WhatsAppService {
         this.client.on('disconnected', (reason) => {
             console.log(chalk.yellow('⚠️ WhatsApp se desconectó:'), reason);
             this.isReady = false;
-            this.handleDisconnection();
+
+            // Si la razón es LOGOUT (cierre de sesión), destruir el cliente y reinicializar
+            if (reason === 'LOGOUT') {
+                console.log(chalk.red('🚪 Sesión cerrada desde el teléfono. Necesitas escanear el código QR nuevamente.'));
+                this.handleLogout();
+            } else {
+                this.handleDisconnection();
+            }
         });
 
         this.client.on('error', (error) => {
@@ -73,6 +80,41 @@ class WhatsAppService {
             console.error(chalk.red('❌ Error al reconectar:'), error);
             console.log(chalk.yellow('🔄 Reintentando en 10 segundos...'));
             setTimeout(() => this.handleDisconnection(), 10000);
+        }
+    }
+
+    /**
+     * Maneja el cierre de sesión (LOGOUT) desde el teléfono
+     */
+    async handleLogout() {
+        if (this.isReconnecting) return;
+
+        this.isReconnecting = true;
+        console.log(chalk.yellow('🔄 Sesión cerrada. Reiniciando cliente para mostrar QR...'));
+
+        try {
+            // Destruir el cliente actual para limpiar la sesión
+            await this.client.destroy();
+
+            // Esperar un momento antes de reinicializar
+            await this.sleep(2000);
+
+            // Crear un nuevo cliente
+            this.client = new Client({
+                authStrategy: new LocalAuth(),
+                puppeteer: CONFIG.WHATSAPP_CONFIG.puppeteer
+            });
+
+            // Reconfigurar los event handlers
+            this.setupEventHandlers();
+
+            // Inicializar el nuevo cliente (esto debería mostrar el QR)
+            await this.client.initialize();
+
+        } catch (error) {
+            console.error(chalk.red('❌ Error al reiniciar después del logout:'), error);
+            console.log(chalk.yellow('🔄 Reintentando en 5 segundos...'));
+            setTimeout(() => this.handleLogout(), 5000);
         }
     }
 

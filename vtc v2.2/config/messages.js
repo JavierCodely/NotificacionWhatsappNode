@@ -11,7 +11,7 @@ Queremos informarte que tu vehículo *${vehicleData.marca} ${vehicleData.modelo}
 
 📅 Fecha de vencimiento: ${vehicleData.fechaVencimiento}
 
-⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento para a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
+⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento pasa a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
 
 👨‍🔧Te recomendamos renovarla pronto para evitar inconvenientes.
 
@@ -25,7 +25,7 @@ Queremos informarte que tu vehículo *${vehicleData.marca} ${vehicleData.modelo}
 
 📅 Fecha de vencimiento: ${vehicleData.fechaVencimiento}
 
-⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento para a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
+⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento pasa a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
 
 👨‍🔧Te recomendamos renovarla pronto para evitar inconvenientes.
 
@@ -39,7 +39,7 @@ Queremos informarte que tu vehículo *${vehicleData.marca} ${vehicleData.modelo}
 
 📅 Fecha de vencimiento: ${vehicleData.fechaVencimiento}
 
-⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento para a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
+⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento pasa a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
 
 👨‍🔧Te recomendamos renovarla pronto para evitar inconvenientes.
 
@@ -53,7 +53,7 @@ Queremos informarte que tu vehículo *${vehicleData.marca} ${vehicleData.modelo}
 
 📅 Fecha de vencimiento: ${vehicleData.fechaVencimiento}
 
-⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento para a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
+⚠️Por disposición de la nueva ley vigente, se aplicará un recargo trimestral del 35% a quienes circulen con la VTV vencida más de 10 días y para vehiculos de transporte de personas el vencimiento pasa a ser cada 1 año, si te ha llegado esta notificacion y tu vehiculo es de transporte de personas te pedimos que mires el vencimiento y si es necesario que lo renueves.⚠️
 
 ¡Saludos del equipo de Alto Verde! 👨‍🔧`
 };

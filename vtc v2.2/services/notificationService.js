@@ -78,12 +78,24 @@ class NotificationService {
         let successCount = 0;
         let errorCount = 0;
         let skippedCount = 0;
+        let alreadyNotifiedCount = 0;
+
+        // Obtener lista de vehículos ya procesados
+        const processedNumbers = this.fileService.getProcessedNumbers();
+        console.log(chalk.blue(`📋 Verificando contactos ya notificados... (${processedNumbers.length} registros)`));
 
         for (const vehicle of vehicles) {
             // Verificar conexión de WhatsApp
             if (!this.whatsappService.isReady) {
                 console.log(chalk.yellow('⚠️ WhatsApp se desconectó, esperando reconexión...'));
                 await this.whatsappService.waitForReady();
+            }
+
+            // Verificar si ya fue notificado
+            if (this.isAlreadyNotified(vehicle.Patente, processedNumbers)) {
+                console.log(chalk.yellow(`⏭️ ${vehicle.Patente} ya fue notificado anteriormente, saltando...`));
+                alreadyNotifiedCount++;
+                continue;
             }
 
             // Verificar teléfono válido
@@ -100,6 +112,7 @@ class NotificationService {
                 if (!result.skipped) {
                     successCount++;
                     this.fileService.markAsProcessed(vehicle.Patente, vehicle.Telefono);
+                    console.log(chalk.green(`✅ ${vehicle.Patente} notificado y marcado como procesado`));
                 } else {
                     skippedCount++;
                 }
@@ -116,8 +129,19 @@ class NotificationService {
         return {
             success: successCount,
             errors: errorCount,
-            skipped: skippedCount
+            skipped: skippedCount,
+            alreadyNotified: alreadyNotifiedCount
         };
+    }
+
+    /**
+     * Verifica si un vehículo ya fue notificado
+     * @param {string} patente Patente del vehículo
+     * @param {Array} processedNumbers Lista de patentes ya procesadas
+     * @returns {boolean} True si ya fue notificado
+     */
+    isAlreadyNotified(patente, processedNumbers) {
+        return processedNumbers.includes(patente);
     }
 
     /**

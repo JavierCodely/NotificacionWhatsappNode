@@ -87,6 +87,13 @@ class FileService {
                 data = XLSX.utils.sheet_to_json(worksheet);
             }
 
+            // Verificar si ya existe para evitar duplicados
+            const existingEntry = data.find(entry => entry.Patente === patente);
+            if (existingEntry) {
+                console.log(chalk.yellow(`⚠️ ${patente} ya estaba marcado como procesado el ${existingEntry.FechaProcesado}`));
+                return;
+            }
+
             const now = new Date();
             data.push({
                 Patente: patente,
@@ -145,6 +152,85 @@ class FileService {
         } catch (error) {
             console.error('Error leyendo errores:', error);
             return [];
+        }
+    }
+
+    /**
+     * Obtiene información detallada de contactos procesados
+     * @returns {Array} Lista completa de contactos procesados con detalles
+     */
+    getProcessedDetails() {
+        try {
+            if (!fs.existsSync(this.processedFile)) {
+                return [];
+            }
+
+            const workbook = XLSX.readFile(this.processedFile);
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            return XLSX.utils.sheet_to_json(worksheet);
+        } catch (error) {
+            console.error('Error leyendo detalles de procesados:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Verifica si una patente específica ya fue procesada
+     * @param {string} patente Patente a verificar
+     * @returns {boolean} True si ya fue procesada
+     */
+    isAlreadyProcessed(patente) {
+        const processedNumbers = this.getProcessedNumbers();
+        return processedNumbers.includes(patente);
+    }
+
+    /**
+     * Obtiene estadísticas de contactos procesados
+     * @returns {Object} Estadísticas de procesamiento
+     */
+    getProcessingStats() {
+        try {
+            const processed = this.getProcessedDetails();
+            const errors = this.getErrors();
+
+            const stats = {
+                totalProcessed: processed.length,
+                totalErrors: errors.length,
+                processingRate: 0,
+                lastProcessed: null,
+                byDate: {}
+            };
+
+            if (processed.length > 0) {
+                // Calcular tasa de éxito
+                const total = processed.length + errors.length;
+                stats.processingRate = ((processed.length / total) * 100).toFixed(2);
+
+                // Última fecha de procesamiento
+                const sortedByDate = processed.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+                stats.lastProcessed = sortedByDate[0].FechaProcesado;
+
+                // Agrupación por fecha
+                processed.forEach(entry => {
+                    const date = entry.FechaProcesado;
+                    if (!stats.byDate[date]) {
+                        stats.byDate[date] = 0;
+                    }
+                    stats.byDate[date]++;
+                });
+            }
+
+            return stats;
+        } catch (error) {
+            console.error('Error obteniendo estadísticas:', error);
+            return {
+                totalProcessed: 0,
+                totalErrors: 0,
+                processingRate: 0,
+                lastProcessed: null,
+                byDate: {}
+            };
         }
     }
 
