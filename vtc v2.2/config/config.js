@@ -51,7 +51,7 @@ const CONFIG = {
 
     // Configuración de teléfonos
     COUNTRY_CODE: '54',
-    PHONE_MIN_LENGTH: 10,
+    PHONE_MIN_LENGTH: 13, // 549 + 10 dígitos mínimo
     PHONE_MAX_LENGTH: 15
 };
 

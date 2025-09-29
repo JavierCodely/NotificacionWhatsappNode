@@ -99,19 +99,36 @@ class WhatsAppService {
             try {
                 await this.waitForReady();
 
-                console.log(chalk.gray(`📨 Enviando mensaje a ${phone}... (intentos restantes: ${retries})`));
+                // Formatear número para mostrar con +
+                let displayNumber;
+                if (phone.includes('@c.us')) {
+                    const cleanNumber = phone.replace('@c.us', '');
+                    displayNumber = '+' + cleanNumber;
+                } else {
+                    displayNumber = '+' + phone;
+                }
+
+                console.log(chalk.gray(`📨 Enviando mensaje a ${displayNumber}... (intentos restantes: ${retries})`));
 
                 if (!phone.includes('@c.us')) {
                     throw new Error('Formato de número inválido');
                 }
 
                 await this.client.sendMessage(phone, message);
-                console.log(chalk.green(`✅ Mensaje enviado exitosamente a ${phone}`));
+                console.log(chalk.green(`✅ Mensaje enviado exitosamente a ${displayNumber}`));
 
                 return true;
 
             } catch (error) {
-                console.error(chalk.red(`❌ Error enviando mensaje a ${phone} (intento ${CONFIG.RETRY_ATTEMPTS + 1 - retries}):`, error.message));
+                // Recrear displayNumber para el mensaje de error
+                let displayNumber;
+                if (phone.includes('@c.us')) {
+                    const cleanNumber = phone.replace('@c.us', '');
+                    displayNumber = '+' + cleanNumber;
+                } else {
+                    displayNumber = '+' + phone;
+                }
+                console.error(chalk.red(`❌ Error enviando mensaje a ${displayNumber} (intento ${CONFIG.RETRY_ATTEMPTS + 1 - retries}):`, error.message));
                 retries--;
 
                 if (retries > 0) {
