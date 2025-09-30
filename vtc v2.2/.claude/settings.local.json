@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Agus/Desktop/Archivos de mas/software/whatsapp-vtv-notifier-node/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

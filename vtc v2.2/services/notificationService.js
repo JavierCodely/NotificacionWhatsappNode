@@ -36,10 +36,10 @@ class NotificationService {
             if (message) {
                 await this.whatsappService.sendMessage(vehicle.Telefono, message);
                 this.fileService.log(`✅ Notificación enviada a ${vehicle.Patente} (${vehicle.Telefono}) - ${diasDiferencia} días`);
-                return { success: true };
+                return { success: true, notified: true };
             } else {
                 this.fileService.log(`ℹ️ Vehículo ${vehicle.Patente} no requiere notificación (${diasDiferencia} días para vencimiento)`);
-                return { success: true, skipped: true };
+                return { success: true, notified: false };
             }
 
         } catch (error) {
@@ -108,14 +108,13 @@ class NotificationService {
 
             const result = await this.processVehicle(vehicle);
 
-            if (result.success) {
-                if (!result.skipped) {
-                    successCount++;
-                    this.fileService.markAsProcessed(vehicle.Patente, vehicle.Telefono);
-                    console.log(chalk.green(`✅ ${vehicle.Patente} notificado y marcado como procesado`));
-                } else {
-                    skippedCount++;
-                }
+            if (result.success && result.notified) {
+                successCount++;
+                this.fileService.markAsProcessed(vehicle.Patente, vehicle.Telefono);
+                console.log(chalk.green(`✅ ${vehicle.Patente} notificado y marcado como procesado`));
+            } else if (result.success && !result.notified) {
+                // No requiere notificación, no se marca como procesado
+                skippedCount++;
             } else {
                 errorCount++;
                 this.fileService.logError(vehicle.Patente, vehicle.Telefono, result.error);

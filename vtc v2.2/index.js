@@ -248,7 +248,14 @@ class VTVNotifierV2 {
             console.log(chalk.blue(`🔄 Ordenando por fecha de vencimiento...`));
             const sortedVehicles = this.excelService.sortByVencimiento(targetVehicles);
 
-            const vehiclesToNotify = sortedVehicles.filter(v => v.Telefono).slice(0, CONFIG.MAX_NOTIFICATIONS_PER_RUN);
+            // Obtener lista de vehículos ya notificados
+            const processedNumbers = this.fileService.getProcessedNumbers();
+
+            // Filtrar: válidos + no notificados + limitar a MAX
+            const vehiclesToNotify = sortedVehicles
+                .filter(v => v.Telefono)
+                .filter(v => !processedNumbers.includes(v.Patente))
+                .slice(0, CONFIG.MAX_NOTIFICATIONS_PER_RUN);
 
             console.log(chalk.blue(`📋 Vehículos que vencen en ${this.getMonthName(this.selectedMonth)} ${this.selectedYear}: ${targetVehicles.length}`));
             console.log(chalk.green(`🔔 Notificando a los ${vehiclesToNotify.length} más próximos a vencer...`));
